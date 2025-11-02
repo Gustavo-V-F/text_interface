@@ -1,6 +1,6 @@
-use std::io;
-use std::fmt;
 use std::collections::HashMap;
+use std::fmt;
+use std::io;
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, PartialOrd, Ord)]
 struct Employee(String);
@@ -109,8 +109,8 @@ impl Company {
             let mut dpts = String::new();
             match departments {
                 Some(dpts_vec) => {
-                	let mut dpts_vec = dpts_vec.clone();
-                	dpts_vec.sort_unstable();
+                    let mut dpts_vec = dpts_vec.clone();
+                    dpts_vec.sort_unstable();
                     for (pos, dpt) in dpts_vec.iter().enumerate() {
                         let dpt = format!("{}", dpt);
                         dpts.push_str(&dpt);
@@ -221,8 +221,11 @@ fn main() {
                     println!("No arguments found.");
                 }
             }
-            Some(command) if command.to_lowercase() == "list" || command.to_lowercase() == "l" ||
-            command.to_lowercase() == "ls" => {
+            Some(command)
+                if command.to_lowercase() == "list"
+                    || command.to_lowercase() == "l"
+                    || command.to_lowercase() == "ls" =>
+            {
                 let word = words.next();
                 match word {
                     Some(subcommand) if subcommand.to_lowercase() == "employees" => {
@@ -245,8 +248,12 @@ fn main() {
                     _ => println!("No arguments found."),
                 }
             }
-            Some(command) if command.to_lowercase() == "exit" || command.to_lowercase() == "e" ||
-             command.to_lowercase() == "quit" || command.to_lowercase() == "q" => {
+            Some(command)
+                if command.to_lowercase() == "exit"
+                    || command.to_lowercase() == "e"
+                    || command.to_lowercase() == "quit"
+                    || command.to_lowercase() == "q" =>
+            {
                 break;
             }
             _ => {

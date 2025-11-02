@@ -155,6 +155,8 @@ fn main() {
     };
 
     loop {
+        println!("Please, enter your command (supports add, create, list, exit/quit):");
+
         let mut text = String::new();
 
         io::stdin()
@@ -201,7 +203,9 @@ fn main() {
                         println!("Added {employee} to the company's {department} department.");
                     }
                 } else {
-                    println!("No arguments found.");
+                    println!(
+                        "No arguments found. Please, enter 'add employee' or 'add employee to department.'"
+                    );
                 }
             }
             Some(command)
@@ -218,7 +222,7 @@ fn main() {
                     office.add_department(&department);
                     println!("Added {department} department to the company.");
                 } else {
-                    println!("No arguments found.");
+                    println!("No arguments found. Please, enter 'create department'.");
                 }
             }
             Some(command)
@@ -245,7 +249,9 @@ fn main() {
                     {
                         println!("Department {subcommand} not found.")
                     }
-                    _ => println!("No arguments found."),
+                    _ => println!(
+                        "No arguments found. Please, enter 'list employees' or 'list department'."
+                    ),
                 }
             }
             Some(command)

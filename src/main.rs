@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-use std::fmt;
 use std::io;
+use std::fmt;
+use std::collections::HashMap;
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, PartialOrd, Ord)]
 struct Employee(String);
@@ -101,7 +101,6 @@ impl Company {
     }
 
     fn list_employees(&self) {
-        println!("Employee in Departments:");
         let mut emply_vec: Vec<(Employee, Option<Vec<Department>>)> =
             self.employees.clone().into_iter().collect();
         emply_vec.sort_by_key(|k| k.0.clone());
@@ -110,10 +109,12 @@ impl Company {
             let mut dpts = String::new();
             match departments {
                 Some(dpts_vec) => {
-                    for (size, dpt) in dpts_vec.iter().enumerate() {
+                	let mut dpts_vec = dpts_vec.clone();
+                	dpts_vec.sort_unstable();
+                    for (pos, dpt) in dpts_vec.iter().enumerate() {
                         let dpt = format!("{}", dpt);
                         dpts.push_str(&dpt);
-                        if size < dpts_vec.len() - 1 {
+                        if pos < dpts_vec.len() - 1 {
                             dpts.push_str(", ");
                         }
                     }
@@ -125,8 +126,25 @@ impl Company {
         }
     }
 
-    fn list_employees_by_department(&self) {
-    	
+    fn list_employees_by_department(&self, department: &Department) {
+        let employees = self.departments.get(&department);
+        let employees = match employees {
+            Some(emply_map) if *emply_map != None => {
+                let mut emply_vec: Vec<Employee> = emply_map.clone().unwrap().into_keys().collect();
+                emply_vec.sort_unstable();
+                let mut employees = String::new();
+                for (pos, emply) in emply_vec.iter().enumerate() {
+                    employees.push_str(&format!("{emply}"));
+                    if pos < emply_vec.len() - 1 {
+                        employees.push_str("\n");
+                    }
+                }
+                employees
+            }
+            _ => String::from("None"),
+        };
+
+        println!("{employees}");
     }
 }
 
@@ -203,16 +221,32 @@ fn main() {
                     println!("No arguments found.");
                 }
             }
-            Some(command) if command.to_lowercase() == "list" || command.to_lowercase() == "l" => {
+            Some(command) if command.to_lowercase() == "list" || command.to_lowercase() == "l" ||
+            command.to_lowercase() == "ls" => {
                 let word = words.next();
                 match word {
                     Some(subcommand) if subcommand.to_lowercase() == "employees" => {
                         office.list_employees()
                     }
-                    _ => continue,
+                    Some(subcommand)
+                        if office
+                            .departments
+                            .contains_key(&Department(subcommand.to_string())) =>
+                    {
+                        office.list_employees_by_department(&Department(subcommand.to_string()));
+                    }
+                    Some(subcommand)
+                        if !office
+                            .departments
+                            .contains_key(&Department(subcommand.to_string())) =>
+                    {
+                        println!("Department {subcommand} not found.")
+                    }
+                    _ => println!("No arguments found."),
                 }
             }
-            Some(command) if command.to_lowercase() == "exit" || command.to_lowercase() == "e" => {
+            Some(command) if command.to_lowercase() == "exit" || command.to_lowercase() == "e" ||
+             command.to_lowercase() == "quit" || command.to_lowercase() == "q" => {
                 break;
             }
             _ => {
